@@ -12,5 +12,14 @@ class Axis extends Model
     {
         return $this->hasMany(AxisResponse::class);
     }
+    public function organization()
+{
+    return $this->belongsTo(Organization::class);
+}
+
+public function responses()
+{
+    return $this->hasMany(AxisResponse::class);
+}
 }
 

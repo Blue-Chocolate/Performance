@@ -10,21 +10,20 @@ return new class extends Migration
      * Run the migrations.
      */
     public function up(): void
-    {
-       Schema::create('organizations', function (Blueprint $table) {
-    $table->id();
-    $table->foreignId('user_id')->constrained()->onDelete('cascade');
-    $table->string('name');
-    $table->string('sector')->nullable();
-    $table->date('established_at')->nullable();
-    $table->string('email')->nullable();
-    $table->string('phone')->nullable();
-    $table->text('address')->nullable();
-    $table->decimal('final_score', 8, 2)->nullable();
-    $table->timestamps();
-});
-
-    }
+{
+    Schema::create('organizations', function (Blueprint $table) {
+        $table->id();
+        $table->foreignId('user_id')->constrained()->onDelete('cascade');
+        $table->string('name');
+        $table->string('sector')->nullable();
+        $table->date('established_at')->nullable();
+        $table->string('email')->nullable();
+        $table->string('phone')->nullable();
+        $table->string('address')->nullable();
+        $table->decimal('final_score', 5, 2)->nullable();
+        $table->timestamps();
+    });
+}
 
     /**
      * Reverse the migrations.
