@@ -33,4 +33,9 @@ class Organization extends Model
 {
     return $this->hasMany(Axis::class);
 }
+public function axesResponses()
+{
+    return $this->hasMany(AxisResponse::class);
+}
+
 }

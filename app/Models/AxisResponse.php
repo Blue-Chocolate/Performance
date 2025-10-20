@@ -13,4 +13,14 @@ class AxisResponse extends Model
 
     public function organization() { return $this->belongsTo(Organization::class); }
     public function axis() { return $this->belongsTo(Axis::class); }
+protected static function booted()
+{
+    static::saved(function ($response) {
+        $org = $response->organization;
+        $average = $org->axisResponses()->avg('admin_score');
+        $org->update(['final_score' => round($average, 2)]);
+    });
+}
+
+
 }

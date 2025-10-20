@@ -4,10 +4,14 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\OrganizationController\OrganizationController;
 use App\Http\Controllers\Api\AxisResponseController\AxisResponseController;
+use App\Http\Controllers\Api\ReleaseController\ReleaseController;
+use App\Http\Controllers\Api\PodcastController\PodcastController;
+
 use App\Http\Controllers\Api\AuthController;
 
 Route::post('register', [AuthController::class, 'register']);
 Route::post('login', [AuthController::class, 'login']);
+Route::get('releases', [ReleaseController::class, 'index']);
 
 Route::middleware('auth:sanctum')->group(function(){
       Route::post('/organizations', [OrganizationController::class, 'store']);
@@ -20,4 +24,12 @@ Route::middleware('auth:sanctum')->group(function(){
 
     // Organization details (keep last)
     Route::get('/organizations/{org}', [OrganizationController::class, 'show']);
+        Route::get('/axis-responses/{orgId}/{axisId}', [AxisResponseController::class, 'show']);
+
+    // Create or update response for a specific axis
+    Route::post('/axis-responses/{orgId}/{axisId}', [AxisResponseController::class, 'storeOrUpdate']);
+
+     Route::get('podcasts', [PodcastController::class, 'index']);
+    Route::post('podcasts', [PodcastController::class, 'store']);
+    Route::get('podcasts/{id}', [PodcastController::class, 'show']);
 });

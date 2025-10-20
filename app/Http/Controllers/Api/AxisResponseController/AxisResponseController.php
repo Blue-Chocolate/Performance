@@ -13,12 +13,11 @@ use Illuminate\Support\Facades\Auth;
 
 class AxisResponseController extends Controller
 {
-    // Get AxisResponse for an organization and axis
+    // Get AxisResponse لمؤسسة ومحور معين
     public function show($orgId, $axisId)
     {
         $organization = Organization::findOrFail($orgId);
 
-        // Authorization: user must own the organization
         if ($organization->user_id !== Auth::id()) {
             return response()->json(['message' => 'Unauthorized'], 403);
         }
@@ -32,12 +31,11 @@ class AxisResponseController extends Controller
         return response()->json($response);
     }
 
-    // Create or update AxisResponse
+    // Create أو Update AxisResponse (User العادي)
     public function storeOrUpdate(Request $request, $orgId, $axisId)
     {
         $organization = Organization::findOrFail($orgId);
 
-        // Authorization check
         if ($organization->user_id !== Auth::id()) {
             return response()->json(['message' => 'Unauthorized'], 403);
         }
@@ -60,7 +58,6 @@ class AxisResponseController extends Controller
 
         $data = $validator->validated();
 
-        // Find or create record
         $axisResponse = AxisResponse::firstOrNew([
             'organization_id' => $organization->id,
             'axis_id' => $axis->id,
@@ -69,7 +66,6 @@ class AxisResponseController extends Controller
         // Handle file uploads
         foreach (['attachment_1', 'attachment_2', 'attachment_3'] as $field) {
             if ($request->hasFile($field)) {
-                // Delete old file if exists
                 if ($axisResponse->$field && Storage::disk('public')->exists($axisResponse->$field)) {
                     Storage::disk('public')->delete($axisResponse->$field);
                 }
@@ -90,4 +86,3 @@ class AxisResponseController extends Controller
         ], 200);
     }
 }
-

@@ -25,7 +25,6 @@ return new class extends Migration
     $table->decimal('admin_score', 5, 2)->nullable(); // 0.00 - 100.00
     $table->timestamps();
     $table->unique(['organization_id', 'axis_id']); // one response per axis per org
-            $table->unsignedInteger('score')->nullable()->after('response_text');
 
 });
 

@@ -21,5 +21,12 @@ public function responses()
 {
     return $this->hasMany(AxisResponse::class);
 }
+
+
+    public function axis()
+    {
+        return $this->belongsTo(Axis::class);
+    }
+
 }
 
