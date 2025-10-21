@@ -23,7 +23,7 @@ Route::middleware('auth:sanctum')->group(function(){
     Route::get('/organizations/{org}/score', [OrganizationController::class, 'score']);
 
     // Organization details (keep last)
-    Route::get('/organizations/{org}', [OrganizationController::class, 'show']);
+Route::get('/organizations/{organization}', [OrganizationController::class, 'show']);
         Route::get('/axis-responses/{orgId}/{axisId}', [AxisResponseController::class, 'show']);
 
     // Create or update response for a specific axis

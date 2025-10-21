@@ -44,7 +44,7 @@ class OrganizationController extends Controller
 
     public function show(Organization $organization)
     {
-        $this->authorize('view', $organization);
+        // $this->authorize('view', $organization);
         return response()->json($organization);
     }
 

@@ -32,13 +32,23 @@ class PodcastResource extends Resource
 
                 Forms\Components\FileUpload::make('audio_path')
                     ->label('Audio File')
-                    ->disk('public') // مهم جدًا
-                    ->directory('podcasts') // الملفات تتخزن داخل storage/app/public/podcasts
-                    ->visibility('public') // علشان تقدر توصلها من المتصفح
+                    ->disk('public')
+                    ->directory('podcasts/audios')
+                    ->visibility('public')
                     ->preserveFilenames()
                     ->acceptedFileTypes(['audio/mpeg', 'audio/mp3', 'audio/wav'])
-                    ->maxSize(20000) // 20MB
-                    ->required(),
+                    ->maxSize(20000)
+                    ->nullable(),
+
+                Forms\Components\FileUpload::make('video_path')
+                    ->label('Video File')
+                    ->disk('public')
+                    ->directory('podcasts/videos')
+                    ->visibility('public')
+                    ->preserveFilenames()
+                    ->acceptedFileTypes(['video/mp4', 'video/webm'])
+                    ->maxSize(50000) // 50MB
+                    ->nullable(),
             ]);
     }
 
@@ -50,13 +60,23 @@ class PodcastResource extends Resource
                     ->sortable()
                     ->searchable(),
 
-                // مشغل صوت مباشر في الجدول
+                // مشغل صوت
                 Tables\Columns\TextColumn::make('audio_path')
                     ->label('Audio')
-                    ->formatStateUsing(fn ($state) => 
-                        $state 
+                    ->formatStateUsing(fn($state) => 
+                        $state
                             ? "<audio controls src='" . asset('storage/' . $state) . "' style='width: 150px;'></audio>"
                             : 'No Audio'
+                    )
+                    ->html(),
+
+                // مشغل فيديو
+                Tables\Columns\TextColumn::make('video_path')
+                    ->label('Video')
+                    ->formatStateUsing(fn($state) => 
+                        $state
+                            ? "<video controls src='" . asset('storage/' . $state) . "' style='width: 150px; height: 100px;'></video>"
+                            : 'No Video'
                     )
                     ->html(),
 

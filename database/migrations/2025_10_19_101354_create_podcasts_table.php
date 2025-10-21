@@ -15,7 +15,9 @@ return new class extends Migration
     $table->id();
     $table->string('title');
     $table->text('description')->nullable();
+    $table->string('cover_image')->nullable();
     $table->string('audio_path'); // مكان الملف
+    $table->string('video_path')->nullable();
     $table->timestamps();
 });
     }
