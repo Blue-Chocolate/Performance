@@ -6,6 +6,10 @@ use App\Http\Controllers\Api\OrganizationController\OrganizationController;
 use App\Http\Controllers\Api\AxisResponseController\AxisResponseController;
 use App\Http\Controllers\Api\ReleaseController\ReleaseController;
 use App\Http\Controllers\Api\PodcastController\PodcastController;
+use App\Http\Controllers\Api\PerformanceCertificateController\PerformanceCertificateController;
+use App\Http\Controllers\Api\PerformanceController\PerformanceController;
+
+
 
 use App\Http\Controllers\Api\AuthController;
 
@@ -32,4 +36,14 @@ Route::get('/organizations/{organization}', [OrganizationController::class, 'sho
      Route::get('podcasts', [PodcastController::class, 'index']);
     Route::post('podcasts', [PodcastController::class, 'store']);
     Route::get('podcasts/{id}', [PodcastController::class, 'show']);
+});
+ Route::prefix('certificates')->group(function () {
+    Route::post('/', [PerformanceCertificateController::class, 'store']); // إنشاء شهادة جديدة
+    Route::get('/questions/{path}', [PerformanceCertificateController::class, 'getQuestionsByPath']); // جلب الأسئلة حسب المسار
+    Route::post('/{id}/answers', [PerformanceCertificateController::class, 'submitAnswers']); // إرسال الإجابات
+    Route::get('/{id}', [PerformanceCertificateController::class, 'show']); // عرض شهادة معينة
+
+
+Route::get('/questions/{path}', [PerformanceCertificateController::class, 'getQuestionsByPath']);
+Route::post('/answers', [PerformanceController::class, 'submitAnswers']);
 });
