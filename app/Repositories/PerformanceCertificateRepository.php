@@ -1,4 +1,5 @@
-<?php 
+<?php
+
 namespace App\Repositories;
 
 use App\Models\{
@@ -11,72 +12,103 @@ use Illuminate\Support\Facades\DB;
 
 class PerformanceCertificateRepository
 {
+    /**
+     * Create a new performance certificate record
+     */
     public function createCertificate(array $data): PerformanceCertificate
     {
         return PerformanceCertificate::create([
             'organization_name' => $data['organization_name'],
-            'executive_name'    => $data['executive_name'],
-            'email'             => $data['email'],
-            'phone'             => $data['phone'],
-            'license_number'    => $data['license_number'],
-            'path'              => $data['path'],
+            'executive_name' => $data['executive_name'],
+            'email' => $data['email'],
+            'phone' => $data['phone'],
+            'license_number' => $data['license_number'],
+            'path' => $data['path'],
         ]);
     }
 
+    /**
+     * Get all axes + questions by path
+     */
     public function getQuestionsByPath(string $path)
     {
         return CriteriaAxis::where('path', $path)
-            ->with('questions:id,criteria_axis_id,question_text,dropdown_options,attachment_required')
+            ->with('questions:id,criteria_axis_id,question_text,options,points_mapping,attachment_required')
             ->get();
     }
 
     /**
-     * المستخدم يجاوب، والسيستم يحسب النقاط بناءً على الـ mapping تلقائيًا.
+     * Save all answers grouped by axis (supports one file per axis)
      */
-    public function saveAnswers(int $certificateId, array $answers)
+    public function saveAxesAnswers(int $certificateId, array $axesData)
     {
-        DB::transaction(function () use ($certificateId, $answers) {
-            foreach ($answers as $ans) {
-                $question = CriteriaQuestion::find($ans['question_id']);
-                $points = $this->calculatePoints($question, $ans['selected_option']);
+        DB::transaction(function () use ($certificateId, $axesData) {
+            $totalScore = 0;
 
-                Answer::create([
-                    'certificate_id'  => $certificateId,
-                    'question_id'     => $ans['question_id'],
-                    'selected_option' => $ans['selected_option'],
-                    'points'          => $points,
-                    'attachment_path' => $ans['attachment_path'] ?? null,
-                ]);
+            foreach ($axesData as $axis) {
+                $attachmentPath = $axis['attachment_path'] ?? null;
+
+                foreach ($axis['answers'] as $answer) {
+                    $question = CriteriaQuestion::findOrFail($answer['question_id']);
+                    $points = $this->calculatePoints($question, $answer['selected_option']);
+
+                    Answer::create([
+                        'certificate_id' => $certificateId,
+                        'question_id' => $question->id,
+                        'selected_option' => $answer['selected_option'],
+                        'points' => $points,
+                        'attachment_path' => $attachmentPath,
+                    ]);
+
+                    $totalScore += $points;
+                }
             }
+
+            $certificate = PerformanceCertificate::findOrFail($certificateId);
+            $certificate->update([
+                'final_score' => $totalScore,
+                'final_rank' => $this->calculateRank($totalScore, $certificate->path),
+            ]);
         });
     }
 
     /**
-     * تحديد النقاط المقابلة للإجابة
+     * Calculate points for a selected option from JSON mapping
      */
     private function calculatePoints(CriteriaQuestion $question, string $selectedOption): float
     {
-        $mapping = $question->points_mapping ?? [];
-        return $mapping[$selectedOption] ?? 0;
+        if (empty($question->points_mapping)) {
+            return 0;
+        }
+
+        $mapping = json_decode($question->points_mapping, true);
+
+        if (!is_array($mapping)) {
+            return 0;
+        }
+
+        return (float)($mapping[$selectedOption] ?? 0);
     }
 
     /**
-     * حساب النتيجة النهائية والتصنيف تلقائيًا (بدون عرضها للمستخدم)
+     * Determine rank based on total score and path
      */
-    public function autoCalculateFinal(PerformanceCertificate $certificate)
+    private function calculateRank(float $score, string $path): string
     {
-        $totalPoints = $certificate->answers()->sum('points');
-
-        $rank = match (true) {
-            $totalPoints >= 90 => 'diamond',
-            $totalPoints >= 75 => 'gold',
-            $totalPoints >= 50 => 'silver',
-            default            => 'bronze',
+        $maxScore = match ($path) {
+            'strategic' => 150,
+            'operational' => 136, // Based on previous context
+            'hr' => 100, // Placeholder; adjust as needed
+            default => 100,
         };
+        $normalizedScore = ($score / $maxScore) * 100;
 
-        $certificate->update([
-            'final_score' => $totalPoints,
-            'final_rank'  => $rank,
-        ]);
+        return match (true) {
+            $normalizedScore >= 86 => 'diamond',
+            $normalizedScore >= 76 => 'gold',
+            $normalizedScore >= 66 => 'silver',
+            $normalizedScore >= 55 => 'bronze',
+            default => 'bronze',
+        };
     }
 }

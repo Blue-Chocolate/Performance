@@ -12,6 +12,8 @@ return new class extends Migration {
             $table->string('description')->nullable();
             $table->enum('path', ['strategic', 'operational', 'hr']); // تابع لأي مسار
             $table->timestamps();
+            $table->integer('weight')->nullable();
+
         });
     }
 

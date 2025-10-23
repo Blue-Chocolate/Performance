@@ -12,18 +12,32 @@ class CriteriaQuestion extends Model
     protected $fillable = [
         'criteria_axis_id',
         'question_text',
-        'dropdown_options',
+        'options',
         'points_mapping',
         'attachment_required',
+        'path',
+        'max_points',
+        'weight',
     ];
 
     protected $casts = [
-        'dropdown_options' => 'array',
+        'options' => 'array',
         'points_mapping' => 'array',
     ];
 
+    /**
+     * العلاقة مع المحور
+     */
     public function axis()
     {
         return $this->belongsTo(CriteriaAxis::class, 'criteria_axis_id');
+    }
+
+    /**
+     * العلاقة مع الإجابات
+     */
+    public function answers()
+    {
+        return $this->hasMany(Answer::class, 'question_id');
     }
 }

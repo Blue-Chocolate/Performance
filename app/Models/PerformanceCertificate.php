@@ -18,10 +18,24 @@ class PerformanceCertificate extends Model
         'path',
         'final_score',
         'final_rank',
+        'weight',
+        'final_points',
+
     ];
 
+    /**
+     * العلاقة مع الإجابات
+     */
     public function answers()
     {
         return $this->hasMany(Answer::class, 'certificate_id');
+    }
+
+    /**
+     * جلب المحاور الخاصة بالمسار
+     */
+    public function criteriaAxes()
+    {
+        return CriteriaAxis::where('path', $this->path)->get();
     }
 }

@@ -3,20 +3,27 @@
 namespace Database\Seeders;
 
 use Illuminate\Database\Seeder;
+use App\Models\CriteriaAxis;
 use App\Models\CriteriaQuestion;
 
 class StrategicCriteriaQuestionsSeeder extends Seeder
 {
     public function run(): void
     {
-        // حذف الأسئلة القديمة الخاصة بالمسار الاستراتيجي (اختياري)
+        // 🧹 Remove old questions for this path
         CriteriaQuestion::where('path', 'strategic')->delete();
 
+        // 🧭 Get or create axis
+        $axis = CriteriaAxis::firstOrCreate(
+            ['path' => 'strategic'],
+            ['name' => 'المسار الاستراتيجي', 'description' => 'محور خاص بالمسار الاستراتيجي']
+        );
+
+        // 📝 Define questions (radio-based)
         $questions = [
             [
-                'criteria_axis_id' => 1,
                 'question_text' => 'ما هو موعد نشر التقرير السنوي للجمعية لهذا العام؟',
-                'dropdown_options' => [
+                'options' => json_encode([
                     'قبل شهر 3',
                     'بعد شهر 3',
                     'بعد شهر 5',
@@ -24,57 +31,102 @@ class StrategicCriteriaQuestionsSeeder extends Seeder
                     'بعد شهر 7',
                     'بعد شهر 8',
                     'بعد شهر 9',
-                    'بعد شهر 10'
-                ],
-                'points_mapping' => [
-                    'قبل شهر 3' => 10,
-                    'بعد شهر 3' => 8,
-                    'بعد شهر 5' => 6,
-                    'بعد شهر 6' => 5,
-                    'بعد شهر 7' => 4,
-                    'بعد شهر 8' => 3,
-                    'بعد شهر 9' => 2,
-                    'بعد شهر 10' => 1
-                ],
+                    'بعد شهر 10',
+                ]),
+                'points_mapping' => json_encode([
+                    'قبل شهر 3' => 15,
+                    'بعد شهر 3' => 10,
+                    'بعد شهر 5' => 8,
+                    'بعد شهر 6' => 6,
+                    'بعد شهر 7' => 5,
+                    'بعد شهر 8' => 4,
+                    'بعد شهر 9' => 3,
+                    'بعد شهر 10' => 2,
+                ]),
                 'attachment_required' => true,
-                'path' => 'strategic',
+                'max_points' => 15,
             ],
             [
-                'criteria_axis_id' => 1,
                 'question_text' => 'كم كانت درجة آخر تقييم للحوكمة الصادر للجمعية؟',
-                'dropdown_options' => ['أقل من 65', 'من 65 - 75', 'من 76 - 85', 'من 86 - 100'],
-                'points_mapping' => ['أقل من 65' => 0, 'من 65 - 75' => 8, 'من 76 - 85' => 12, 'من 86 - 100' => 15],
+                'options' => json_encode([
+                    'أقل من 65',
+                    'من 65 - 75',
+                    'من 76 - 85',
+                    'من 86 - 100',
+                ]),
+                'points_mapping' => json_encode([
+                    'أقل من 65' => 0,
+                    'من 65 - 75' => 15,
+                    'من 76 - 85' => 30,
+                    'من 86 - 100' => 50,
+                ]),
                 'attachment_required' => true,
-                'path' => 'strategic',
+                'max_points' => 50,
             ],
             [
-                'criteria_axis_id' => 1,
                 'question_text' => 'كم كانت درجة تقييم الأداء الاستراتيجي في نهاية العام؟',
-                'dropdown_options' => ['أقل من 65%', 'من 65 - 75%', 'من 76 - 85%', 'من 86 - 100%'],
-                'points_mapping' => ['أقل من 65%' => 20, 'من 65 - 75%' => 30, 'من 76 - 85%' => 40, 'من 86 - 100%' => 50],
+                'options' => json_encode([
+                    'أقل من 65%',
+                    'من 65 - 75%',
+                    'من 76 - 85%',
+                    'من 86 - 100%',
+                ]),
+                'points_mapping' => json_encode([
+                    'أقل من 65%' => 0,
+                    'من 65 - 75%' => 15,
+                    'من 76 - 85%' => 30,
+                    'من 86 - 100%' => 15,
+                ]),
                 'attachment_required' => true,
-                'path' => 'strategic',
+                'max_points' => 30,
             ],
             [
-                'criteria_axis_id' => 1,
                 'question_text' => 'تقرير الاستدامة: ما حالة التقرير في الجمعية حاليًا؟',
-                'dropdown_options' => ['لن يعد', 'جاري الإعداد', 'تم الانتهاء ولم يُنشر', 'تم النشر'],
-                'points_mapping' => ['لن يعد' => 0, 'جاري الإعداد' => 5, 'تم الانتهاء ولم يُنشر' => 10, 'تم النشر' => 15],
+                'options' => json_encode([
+                    'لن يعد',
+                    'جاري الإعداد',
+                    'تم الانتهاء ولم يُنشر',
+                    'تم النشر',
+                ]),
+                'points_mapping' => json_encode([
+                    'لن يعد' => 0,
+                    'جاري الإعداد' => 5,
+                    'تم الانتهاء ولم يُنشر' => 10,
+                    'تم النشر' => 15,
+                ]),
                 'attachment_required' => true,
-                'path' => 'strategic',
+                'max_points' => 15,
             ],
             [
-                'criteria_axis_id' => 1,
                 'question_text' => 'تقرير قياس الأثر: ما حالة التقرير في الجمعية حاليًا؟',
-                'dropdown_options' => ['لن يعد', 'جاري الإعداد', 'تم الانتهاء ولم يُنشر', 'تم النشر'],
-                'points_mapping' => ['لن يعد' => 0, 'جاري الإعداد' => 2.5, 'تم الانتهاء ولم يُنشر' => 7, 'تم النشر' => 10],
+                'options' => json_encode([
+                    'لن يعد',
+                    'جاري الإعداد',
+                    'تم الانتهاء ولم يُنشر',
+                    'تم النشر',
+                ]),
+                'points_mapping' => json_encode([
+                    'لن يعد' => 0,
+                    'جاري الإعداد' => 2.5,
+                    'تم الانتهاء ولم يُنشر' => 7,
+                    'تم النشر' => 10,
+                ]),
                 'attachment_required' => true,
-                'path' => 'strategic',
+                'max_points' => 10,
             ],
         ];
 
+        // 💾 Insert questions
         foreach ($questions as $q) {
-            CriteriaQuestion::create($q);
+            CriteriaQuestion::create([
+                'criteria_axis_id' => $axis->id,
+                'question_text' => $q['question_text'],
+                'options' => $q['options'],
+                'points_mapping' => $q['points_mapping'],
+                'attachment_required' => $q['attachment_required'],
+                'path' => 'strategic',
+                'max_points' => $q['max_points'],
+            ]);
         }
     }
 }

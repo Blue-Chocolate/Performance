@@ -6,7 +6,6 @@ use App\Http\Controllers\Api\OrganizationController\OrganizationController;
 use App\Http\Controllers\Api\AxisResponseController\AxisResponseController;
 use App\Http\Controllers\Api\ReleaseController\ReleaseController;
 use App\Http\Controllers\Api\PodcastController\PodcastController;
-use App\Http\Controllers\Api\PerformanceCertificateController\PerformanceCertificateController;
 use App\Http\Controllers\Api\PerformanceController\PerformanceController;
 
 
@@ -37,13 +36,32 @@ Route::get('/organizations/{organization}', [OrganizationController::class, 'sho
     Route::post('podcasts', [PodcastController::class, 'store']);
     Route::get('podcasts/{id}', [PodcastController::class, 'show']);
 });
- Route::prefix('certificates')->group(function () {
-    Route::post('/', [PerformanceCertificateController::class, 'store']); // إنشاء شهادة جديدة
-    Route::get('/questions/{path}', [PerformanceCertificateController::class, 'getQuestionsByPath']); // جلب الأسئلة حسب المسار
-    Route::post('/{id}/answers', [PerformanceCertificateController::class, 'submitAnswers']); // إرسال الإجابات
-    Route::get('/{id}', [PerformanceCertificateController::class, 'show']); // عرض شهادة معينة
+use App\Http\Controllers\Api\PerformanceCertificateController\PerformanceCertificateController;
 
+Route::prefix('performance-certificates')->group(function () {
+    // ➊ Create new certificate
+    Route::post('/', [PerformanceCertificateController::class, 'store'])->name('performance-certificates.store');
 
-Route::get('/questions/{path}', [PerformanceCertificateController::class, 'getQuestionsByPath']);
-Route::post('/answers', [PerformanceController::class, 'submitAnswers']);
+    // ➋ Get questions by path
+    Route::get('/questions/{path}', [PerformanceCertificateController::class, 'getQuestionsByPath'])->name('performance-certificates.questions');
+
+    // ➌ Submit answers (axis-based)
+    Route::post('/{certificateId}/answers', [PerformanceCertificateController::class, 'submitAnswers'])->name('performance-certificates.submit-answers');
+
+    // ➍ Submit strategic path answers
+    Route::post('/{certificateId}/strategic-answers', [PerformanceCertificateController::class, 'submitStrategicAnswers'])->name('performance-certificates.submit-strategic-answers');
+
+    // ➎ Show final certificate details
+    Route::get('/{id}', [PerformanceCertificateController::class, 'show'])->name('performance-certificates.show');
+
+    // ➏ Update strategic path answers
+    Route::put('/{id}/strategic-answers', [PerformanceCertificateController::class, 'updateStrategicAnswers'])->name('performance-certificates.update-strategic-answers');
+
+    // ➐ Delete certificate
+    Route::delete('/{id}', [PerformanceCertificateController::class, 'destroy'])->name('performance-certificates.destroy');
 });
+
+use App\Http\Controllers\Api\StrategicPathController;
+
+Route::apiResource('strategic-paths', StrategicPathController::class);
+

@@ -9,10 +9,17 @@ class CriteriaAxis extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['name', 'description', 'path'];
+    protected $fillable = [
+        'name',
+        'description',
+        'path',
+    ];
 
+    /**
+     * العلاقة مع الأسئلة
+     */
     public function questions()
     {
-        return $this->hasMany(CriteriaQuestion::class);
+        return $this->hasMany(CriteriaQuestion::class, 'criteria_axis_id');
     }
 }

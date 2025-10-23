@@ -18,6 +18,10 @@ class DatabaseSeeder extends Seeder
         // User::factory(10)->create();
             $this->call(OrganizationAndAxesSeeder::class);
             $this->call(StrategicCriteriaQuestionsSeeder::class);
+            $this->call(OperationalQuestionsSeeder::class);
+            $this->call(HrEvaluationSeeder::class);
+
+  
 
 
         User::factory()->create([
