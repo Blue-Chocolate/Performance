@@ -38,27 +38,26 @@ Route::get('/organizations/{organization}', [OrganizationController::class, 'sho
 });
 use App\Http\Controllers\Api\PerformanceCertificateController\PerformanceCertificateController;
 
-Route::prefix('performance-certificates')->group(function () {
-    // ➊ Create new certificate
-    Route::post('/', [PerformanceCertificateController::class, 'store'])->name('performance-certificates.store');
-
-    // ➋ Get questions by path
-    Route::get('/questions/{path}', [PerformanceCertificateController::class, 'getQuestionsByPath'])->name('performance-certificates.questions');
-
-    // ➌ Submit answers (axis-based)
-    Route::post('/{certificateId}/answers', [PerformanceCertificateController::class, 'submitAnswers'])->name('performance-certificates.submit-answers');
-
-    // ➍ Submit strategic path answers
-    Route::post('/{certificateId}/strategic-answers', [PerformanceCertificateController::class, 'submitStrategicAnswers'])->name('performance-certificates.submit-strategic-answers');
-
-    // ➎ Show final certificate details
-    Route::get('/{id}', [PerformanceCertificateController::class, 'show'])->name('performance-certificates.show');
-
-    // ➏ Update strategic path answers
-    Route::put('/{id}/strategic-answers', [PerformanceCertificateController::class, 'updateStrategicAnswers'])->name('performance-certificates.update-strategic-answers');
-
-    // ➐ Delete certificate
-    Route::delete('/{id}', [PerformanceCertificateController::class, 'destroy'])->name('performance-certificates.destroy');
+Route::prefix('certificates')->group(function () {
+    
+    // ➊ Organization Registration
+    Route::post('/', [PerformanceCertificateController::class, 'store']);
+    
+    // ➋ Get questions by path (strategic, operational, hr)
+    Route::get('/questions/{path}', [PerformanceCertificateController::class, 'getQuestionsByPath'])
+        ->whereIn('path', ['strategic', 'operational', 'hr']);
+    
+    // ➌ Submit answers for a certificate
+    Route::post('/{certificateId}/answers', [PerformanceCertificateController::class, 'submitAnswers']);
+    
+    // ➍ Get certificate details with answers
+    Route::get('/{id}', [PerformanceCertificateController::class, 'show']);
+    
+    // ➎ Update answers (for corrections)
+    Route::put('/{certificateId}/answers', [PerformanceCertificateController::class, 'updateAnswers']);
+    
+    // ➏ Delete certificate
+    Route::delete('/{id}', [PerformanceCertificateController::class, 'destroy']);
 });
 
 use App\Http\Controllers\Api\StrategicPathController;

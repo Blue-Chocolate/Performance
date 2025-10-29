@@ -32,18 +32,30 @@ class ModelFileResource extends Resource
                     ->rows(3)
                     ->nullable(),
 
+                // ✅ Cover Image Upload
+                Forms\Components\FileUpload::make('cover_image')
+                    ->label('Cover Image')
+                    ->disk('public')
+                    ->directory('models/covers')
+                    ->visibility('public')
+                    ->image() // only allow image types
+                    ->maxSize(10240) // 10 MB
+                    ->nullable(),
+
+                // ✅ File Upload (documents)
                 Forms\Components\FileUpload::make('file_path')
-                    ->label('File (PDF, DOCX, Excel, PTXX)')
+                    ->label('File (PDF, DOCX, Excel, PPTX)')
                     ->disk('public')
                     ->directory('models')
                     ->visibility('public')
-                    // ->preserveFilenames()
                     ->acceptedFileTypes([
                         'application/pdf',
                         'application/msword',
                         'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
                         'application/vnd.ms-excel',
-                        'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+                        'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+                        'application/vnd.ms-powerpoint',
+                        'application/vnd.openxmlformats-officedocument.presentationml.presentation',
                     ])
                     ->maxSize(50000)
                     ->required(),
@@ -54,6 +66,15 @@ class ModelFileResource extends Resource
     {
         return $table
             ->columns([
+                // ✅ Show Cover Image
+                Tables\Columns\ImageColumn::make('cover_image')
+                    ->label('Cover')
+                    ->square()
+                    ->disk('public')
+                    ->visibility('public')
+                    ->defaultImageUrl(asset('images/default-cover.png')) // optional default image
+                    ->height(60),
+
                 Tables\Columns\TextColumn::make('name')
                     ->label('Model Name')
                     ->sortable()

@@ -9,7 +9,7 @@ class Answer extends Model
 {
     use HasFactory;
 
-    protected $fillable = [
+      protected $fillable = [
         'certificate_id',
         'question_id',
         'selected_option',
@@ -17,11 +17,11 @@ class Answer extends Model
         'final_points',
         'attachment_path',
     ];
-    protected $casts = [
-    'points' => 'float',
-    'final_points' => 'float',
-];
 
+  protected $casts = [
+        'points' => 'decimal:2',
+        'final_points' => 'decimal:2',
+    ];
     /**
      * العلاقة مع الشهادة
      */

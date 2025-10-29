@@ -2,24 +2,24 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class CriteriaAxis extends Model
 {
-    use HasFactory;
-
     protected $fillable = [
         'name',
         'description',
         'path',
+        'weight',
     ];
 
-    /**
-     * العلاقة مع الأسئلة
-     */
-    public function questions()
+    protected $casts = [
+        'weight' => 'decimal:2',
+    ];
+
+    public function questions(): HasMany
     {
-        return $this->hasMany(CriteriaQuestion::class, 'criteria_axis_id');
+        return $this->hasMany(CriteriaQuestion::class);
     }
 }

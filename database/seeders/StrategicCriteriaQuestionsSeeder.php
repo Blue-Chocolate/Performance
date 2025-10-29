@@ -16,10 +16,13 @@ class StrategicCriteriaQuestionsSeeder extends Seeder
         // 🧭 Get or create axis
         $axis = CriteriaAxis::firstOrCreate(
             ['path' => 'strategic'],
-            ['name' => 'المسار الاستراتيجي', 'description' => 'محور خاص بالمسار الاستراتيجي']
+            [
+                'name' => 'المسار الاستراتيجي',
+                'description' => 'محور خاص بالمسار الاستراتيجي'
+            ]
         );
 
-        // 📝 Define questions (radio-based)
+        // 📝 Define questions with weights
         $questions = [
             [
                 'question_text' => 'ما هو موعد نشر التقرير السنوي للجمعية لهذا العام؟',
@@ -44,7 +47,7 @@ class StrategicCriteriaQuestionsSeeder extends Seeder
                     'بعد شهر 10' => 2,
                 ]),
                 'attachment_required' => true,
-                'max_points' => 15,
+                'weight' => 1.0,
             ],
             [
                 'question_text' => 'كم كانت درجة آخر تقييم للحوكمة الصادر للجمعية؟',
@@ -61,7 +64,7 @@ class StrategicCriteriaQuestionsSeeder extends Seeder
                     'من 86 - 100' => 50,
                 ]),
                 'attachment_required' => true,
-                'max_points' => 50,
+                'weight' => 1.0,
             ],
             [
                 'question_text' => 'كم كانت درجة تقييم الأداء الاستراتيجي في نهاية العام؟',
@@ -75,10 +78,10 @@ class StrategicCriteriaQuestionsSeeder extends Seeder
                     'أقل من 65%' => 0,
                     'من 65 - 75%' => 15,
                     'من 76 - 85%' => 30,
-                    'من 86 - 100%' => 15,
+                    'من 86 - 100%' => 45,
                 ]),
                 'attachment_required' => true,
-                'max_points' => 30,
+                'weight' => 1.0,
             ],
             [
                 'question_text' => 'تقرير الاستدامة: ما حالة التقرير في الجمعية حاليًا؟',
@@ -95,7 +98,7 @@ class StrategicCriteriaQuestionsSeeder extends Seeder
                     'تم النشر' => 15,
                 ]),
                 'attachment_required' => true,
-                'max_points' => 15,
+                'weight' => 1.0,
             ],
             [
                 'question_text' => 'تقرير قياس الأثر: ما حالة التقرير في الجمعية حاليًا؟',
@@ -112,7 +115,7 @@ class StrategicCriteriaQuestionsSeeder extends Seeder
                     'تم النشر' => 10,
                 ]),
                 'attachment_required' => true,
-                'max_points' => 10,
+                'weight' => 1.0,
             ],
         ];
 
@@ -125,8 +128,10 @@ class StrategicCriteriaQuestionsSeeder extends Seeder
                 'points_mapping' => $q['points_mapping'],
                 'attachment_required' => $q['attachment_required'],
                 'path' => 'strategic',
-                'max_points' => $q['max_points'],
+                'weight' => $q['weight'],
             ]);
         }
+
+        $this->command->info('✅ Strategic questions seeded successfully!');
     }
 }

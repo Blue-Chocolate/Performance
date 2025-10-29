@@ -30,6 +30,17 @@ class PodcastResource extends Resource
                     ->rows(3)
                     ->nullable(),
 
+                Forms\Components\FileUpload::make('cover_image')
+                    ->label('Cover Image')
+                    ->disk('public')
+                    ->directory('podcasts/covers')
+                    ->visibility('public')
+                    ->preserveFilenames()
+                    ->image()
+                    ->imageEditor()
+                    ->maxSize(5000) // 5MB
+                    ->nullable(),
+
                 Forms\Components\FileUpload::make('audio_path')
                     ->label('Audio File')
                     ->disk('public')
@@ -59,6 +70,12 @@ class PodcastResource extends Resource
                 Tables\Columns\TextColumn::make('title')
                     ->sortable()
                     ->searchable(),
+
+                Tables\Columns\ImageColumn::make('cover_image')
+                    ->label('Cover')
+                    ->disk('public')
+                    ->width(100)
+                    ->height(100),
 
                 // مشغل صوت
                 Tables\Columns\TextColumn::make('audio_path')
