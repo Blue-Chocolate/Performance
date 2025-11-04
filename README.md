@@ -1,3 +1,42 @@
+POST http://127.0.0.1:8000/api/register 
+
+
+{
+  "name": "John Doe",
+  "email": "john@example.com",
+  "password": "secret123"
+}
+
+
+POST http://127.0.0.1:8000/api/organizations  //للردع ليس الشهادة
+
+
+{
+  "name": "Tech Innovators Ltd",
+  "sector": "Information Technology",
+  "established_at": "2015-04-22",
+  "email": "contact@techinnovators.com",
+  "phone": "+201001234567",
+  "address": "123 Nile Street, Cairo, Egypt"
+}
+
+post   http://127.0.0.1:8000/api/organizations/{org_id}/axes/{axis}
+
+* They all are booleans *
+
+
+| Key            | Value             | Type |
+| -------------- | ----------------- | ---- |
+| `q1`           | `1`            | Text |
+| `q2`           | `1`           | Text |
+| `q3`           | `1`            | Text |
+| `q4`           | `0`           | Text |
+| `attachment_1` | *(choose a file)* | File |
+| `attachment_2` | *(optional)*      | File |
+| `attachment_3` | *(optional)*      | File |
+
+
+
 1️⃣ Organization Registration
 Endpoint
 
@@ -18,6 +57,7 @@ Response
     "certificate_id": 1
   }
 }
+
 
 2️⃣ Get Questions by Path
 Endpoint

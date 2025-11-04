@@ -8,7 +8,6 @@ use App\Models\PerformanceCertificate;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 
-use App\Models\CriteriaQuestion;
 class PerformanceCertificateController extends Controller
 {
     protected PerformanceCertificateRepository $repo;
@@ -164,66 +163,9 @@ class PerformanceCertificateController extends Controller
             'answers' => 'required|array|min:1',
             'answers.*.question_id' => 'required|integer|exists:criteria_questions,id',
             'answers.*.selected_option' => 'required|string',
+            'answers.*.attachment' => 'nullable|file|mimes:pdf,doc,docx,jpg,jpeg,png|max:5120',
         ];
-
-        // 📎 Get questions for this path to determine attachment requirements
-        $questions = $this->repo->getQuestionsForValidation($path);
-        
-        foreach ($questions as $index => $question) {
-            if ($question->attachment_required) {
-                $rules["answers.$index.attachment"] = 'required|file|mimes:pdf,doc,docx,jpg,jpeg,png|max:5120';
-            } else {
-                $rules["answers.$index.attachment"] = 'nullable|file|mimes:pdf,doc,docx,jpg,jpeg,png|max:5120';
-            }
-        }
 
         return Validator::make($request->all(), $rules);
     }
-    public function debugRequest(Request $request, int $certificateId)
-{
-    $certificate = PerformanceCertificate::findOrFail($certificateId);
-    $answersData = $request->input('answers', []);
-    
-    $debugInfo = [];
-    
-    foreach ($answersData as $index => $answerInput) {
-        $question = CriteriaQuestion::find($answerInput['question_id'] ?? null);
-        
-        if (!$question) {
-            $debugInfo[] = [
-                'index' => $index,
-                'error' => 'Question not found',
-                'question_id' => $answerInput['question_id'] ?? 'missing',
-            ];
-            continue;
-        }
-        
-        $options = $question->options;
-        if (is_string($options)) {
-            $options = json_decode($options, true);
-        }
-        
-        $selectedOption = $answerInput['selected_option'] ?? '';
-        
-        $debugInfo[] = [
-            'index' => $index,
-            'question_id' => $question->id,
-            'question_text' => $question->question_text,
-            'received_option' => $selectedOption,
-            'received_length' => strlen($selectedOption),
-            'received_hex' => bin2hex($selectedOption),
-            'available_options' => $options,
-            'options_hex' => array_map('bin2hex', $options ?? []),
-            'exact_match' => in_array($selectedOption, $options ?? []),
-            'trimmed_match' => in_array(trim($selectedOption), array_map('trim', $options ?? [])),
-        ];
-    }
-    
-    return response()->json([
-        'certificate_id' => $certificateId,
-        'certificate_path' => $certificate->path,
-        'total_answers' => count($answersData),
-        'debug_info' => $debugInfo,
-    ]);
-}
 }
