@@ -18,18 +18,20 @@ class AuthController extends Controller
         ]);
 
         $user = User::create([
-            'name' => $request->name,
-            'email' => $request->email,
-            'password' => Hash::make($request->password),
+         'name' => $request->name,
+        'email' => $request->email,
+        'phone' => $request->phone,
+        'password' => bcrypt($request->password),
+         ]);
+
+        $otp = rand(100000, 999999);
+        $user->update([
+        'otp' => $otp,
+        'otp_expires_at' => now()->addMinutes(10),
         ]);
 
-        $token = $user->createToken('api_token')->plainTextToken;
-
-        return response()->json([
-            'message' => 'User registered successfully',
-            'token' => $token,
-            'user' => $user
-        ], 201);
+    // Send OTP via email or SMS here
+       return response()->json(['message' => 'User registered. OTP sent.']);
     }
 
     public function login(Request $request)
@@ -60,4 +62,17 @@ class AuthController extends Controller
 
         return response()->json(['message' => 'Logged out']);
     }
+    public function verifyOtp(Request $request) {
+    $request->validate(['email' => 'required|email', 'otp' => 'required']);
+    $user = User::where('email', $request->email)
+        ->where('otp', $request->otp)
+        ->where('otp_expires_at', '>', now())
+        ->first();
+
+    if (!$user) return response()->json(['message' => 'Invalid or expired OTP'], 400);
+
+        $user->update(['otp' => null, 'otp_expires_at' => null, 'email_verified_at' => now()]);
+        return response()->json(['message' => 'OTP verified successfully']);
+    }
+    
 }

@@ -1,4 +1,4 @@
-POST http://127.0.0.1:8000/api/register 
+POST /api/register 
 
 
 {
@@ -8,7 +8,7 @@ POST http://127.0.0.1:8000/api/register
 }
 
 
-POST http://127.0.0.1:8000/api/organizations  //للردع ليس الشهادة
+POST /api/organizations  //للردع ليس الشهادة
 
 
 {
@@ -20,7 +20,7 @@ POST http://127.0.0.1:8000/api/organizations  //للردع ليس الشهادة
   "address": "123 Nile Street, Cairo, Egypt"
 }
 
-post   http://127.0.0.1:8000/api/organizations/{org_id}/axes/{axis}
+post   /api/organizations/{org_id}/axes/{axis}
 
 * They all are booleans *
 
