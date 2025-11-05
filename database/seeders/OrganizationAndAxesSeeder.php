@@ -17,6 +17,8 @@ class OrganizationAndAxesSeeder extends Seeder
             ['email' => 'admin@example.com'],
             [
                 'name' => 'Admin User',
+                'phone' => '+2010032323',
+                'email'=> 'haasklany@gmail.com',
                 'password' => bcrypt('password'),
             ]
         );

@@ -15,6 +15,8 @@ use App\Http\Controllers\Api\AuthController;
 Route::post('register', [AuthController::class, 'register']);
 Route::post('login', [AuthController::class, 'login']);
 Route::get('releases', [ReleaseController::class, 'index']);
+Route::post('/verify-otp', [AuthController::class, 'verifyOtp']);
+
 
 Route::middleware('auth:sanctum')->group(function(){
       Route::post('/organizations', [OrganizationController::class, 'store']);

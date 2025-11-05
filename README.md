@@ -1,12 +1,13 @@
 POST /api/register 
 
-
 {
-  "name": "John Doe",
-  "email": "john@example.com",
-  "password": "secret123"
+  "name": "Hassan Asqlany",
+  "phone": "+201003232423",
+  "email": "Haasqlany@example.com",
+  "password": "secret123",
+  "password_confirmantion": "secret123",
+  "user_priviliages": "Trainee"
 }
-
 
 POST /api/organizations  //للردع ليس الشهادة
 
