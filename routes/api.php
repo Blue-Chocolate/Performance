@@ -15,10 +15,14 @@ use App\Http\Controllers\Api\AuthController;
 Route::post('register', [AuthController::class, 'register']);
 Route::post('login', [AuthController::class, 'login']);
 Route::get('releases', [ReleaseController::class, 'index']);
+Route::get('releases/{id}', [ReleaseController::class, 'show']);
+
 Route::post('/verify-otp', [AuthController::class, 'verifyOtp']);
 Route::post('/forgot-password', [AuthController::class, 'forgotPassword']);
 Route::post('/reset-password', [AuthController::class, 'resetPassword']);
-
+  Route::get('podcasts', [PodcastController::class, 'index']);
+    Route::get('podcasts/{id}', [PodcastController::class, 'show']);
+    
 Route::middleware('auth:sanctum')->group(function(){
       Route::post('/organizations', [OrganizationController::class, 'store']);
 
@@ -35,9 +39,7 @@ Route::get('/organizations/{organization}', [OrganizationController::class, 'sho
     // Create or update response for a specific axis
     Route::post('/axis-responses/{orgId}/{axisId}', [AxisResponseController::class, 'storeOrUpdate']);
 
-     Route::get('podcasts', [PodcastController::class, 'index']);
-    Route::post('podcasts', [PodcastController::class, 'store']);
-    Route::get('podcasts/{id}', [PodcastController::class, 'show']);
+   
 });
 use App\Http\Controllers\Api\PerformanceCertificateController\PerformanceCertificateController;
 
@@ -67,3 +69,7 @@ use App\Http\Controllers\Api\StrategicPathController;
 
 Route::apiResource('strategic-paths', StrategicPathController::class);
 
+use App\Http\Controllers\Api\BlogController\BlogController;
+
+Route::get('blogs', [BlogController::class, 'index']);
+Route::get('blogs/{id}', [BlogController::class, 'show']);

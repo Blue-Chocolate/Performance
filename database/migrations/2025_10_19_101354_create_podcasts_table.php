@@ -14,11 +14,13 @@ return new class extends Migration
         Schema::create('podcasts', function (Blueprint $table) {
     $table->id();
     $table->string('title');
+    $table->text('short_description')->nullable();
     $table->text('description')->nullable();
     $table->string('cover_image')->nullable();
     $table->string('audio_path'); // مكان الملف
     $table->string('video_path')->nullable();
     $table->string('cover')->nullable();
+    $table->timestamp('published_at')->nullable(); // add this
     $table->timestamps();
 });
     }
